@@ -1,3 +1,4 @@
+import { color } from 'mocha/lib/reporters/base';
 import {StyleSheet, Dimensions} from 'react-native';
 
 let width = Dimensions.get('window').width;
@@ -16,7 +17,7 @@ const TodoStyles = {
     borderRadius: 9,
   },
   todoList: {
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 10,
     width: width * 0.8,
     height: 40,
@@ -28,7 +29,6 @@ const TodoStyles = {
     padding: 5,
   },
   removeTodo: {
-    backgroundColor: 'cyan',
     borderRadius: 4,
     alignItems: 'center',
     margin: 4,
