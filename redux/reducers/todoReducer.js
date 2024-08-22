@@ -1,6 +1,6 @@
 import {ADD_TODO, REMOVE_TODO, TOGGLE_TODO} from '../actions/todoAction/ActionTypes';
 
-const INITIAL_STATE = {todos: []};
+const INITIAL_STATE = {todos: [{text: 'Learn Redux', completed: false}, {text:'Learn React', completed: false}]};
 
 // Example reducer snippet
 const todoReducer = (state = INITIAL_STATE, action) => {

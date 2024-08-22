@@ -1,7 +1,6 @@
-import React, {useState} from 'react';
-import {connect} from 'react-redux';
-import {AddTodo, RemoveTodo, ToggleTodo} from '../redux/actions/todoAction/todoActions';
-import {styles} from './TodoStyles';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { styles } from './TodoStyles';
 import {
   Text,
   View,
@@ -10,38 +9,50 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
+import * as TodoActions from '../redux/actions/todoAction/todoActions';
+import { bindActionCreators } from 'redux';
 
-const Todo = ({ todos, addTodo, removeTodo, toggleTodo }) => {
-  const [todoValue, setTodoValue] = useState('');
+class Todo extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      todoValue: '',
+    };
+  }
 
-  const handleAddTodo = () => {
+  handleAddTodo = () => {
+    const { todos, addTodo } = this.props;
+    const { todoValue } = this.state;
     if (todos && !todos.find(todo => todo.text === todoValue)) {
-      addTodo({ text: todoValue, completed: false });
-      setTodoValue('');
+      this.props.AddTodo({ text: todoValue, completed: false });
+      this.setState({ todoValue: '' });
     } else {
       alert(`${todoValue} already added in Todo List`);
     }
   };
 
-  const handleRemoveTodo = item => {
-    removeTodo(item);
+  handleRemoveTodo = (item) => {
+    this.props.RemoveTodo(item);
   };
 
-  const handleToggleTodo = item => {
-    toggleTodo(item);
+  handleToggleTodo = (item) => {
+    this.props.ToggleTodo(item);
   };
 
-  const renderTodoList = () => {
+  renderTodoList = () => {
+    const { todos } = this.props;
+
     return (
       <FlatList
         data={todos}
         keyExtractor={(item, index) => item.text + index.toString()} // Ensures a unique key
         extraData={todos} // Ensures FlatList re-renders when todos change
-        renderItem={({item}) => (
+        renderItem={({ item }) => (
           <View style={styles.todoView}>
             <TouchableOpacity
               style={styles.todoList}
-              onPress={() => handleToggleTodo(item)}>
+              onPress={() => this.handleToggleTodo(item)}
+            >
               <Text
                 style={[
                   { padding: 7 },
@@ -53,8 +64,9 @@ const Todo = ({ todos, addTodo, removeTodo, toggleTodo }) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.removeTodo}
-              onPress={() => handleRemoveTodo(item)}>
-              <Text style={{color: 'red', fontWeight: '700', fontSize: 22}}> X </Text>
+              onPress={() => this.handleRemoveTodo(item)}
+            >
+              <Text style={{ color: 'red', fontWeight: '700', fontSize: 22 }}> X </Text>
             </TouchableOpacity>
           </View>
         )}
@@ -62,34 +74,36 @@ const Todo = ({ todos, addTodo, removeTodo, toggleTodo }) => {
     );
   };
 
-  return (
-    <View style={styles.main}>
-      <TextInput
-        style={styles.mainInput}
-        onChangeText={setTodoValue}
-        placeholder={'Add your todo here'}
-        value={todoValue}
-      />
-      <Button name="increase" title="Add Todo" onPress={handleAddTodo} />
+  render() {
+    return (
+      <View style={styles.main}>
+        <TextInput
+          style={styles.mainInput}
+          onChangeText={(todoValue) => this.setState({ todoValue })}
+          placeholder={'Add your todo here'}
+          value={this.state.todoValue}
+        />
+        <Button name="increase" title="Add Todo" onPress={this.handleAddTodo} />
 
-      <Text style={{alignSelf: 'stretch', paddingLeft: 40}}>
-        List of Todos:
-      </Text>
-      {renderTodoList()}
-    </View>
-  );
-};
+        <Text style={{ alignSelf: 'stretch', paddingLeft: 40 }}>
+          List of Todos:
+        </Text>
+        {this.renderTodoList()}
+      </View>
+    );
+  }
+}
 
 // Map state to props
-const mapStateToProps = (state) => ({
-  todos: state.todos.todos,
-});
+const mapStateToProps = (todoReducer) => {
+  return {
+    todos: todoReducer.todos.todos
+  };
+};
 
 // Map dispatch to props
-const mapDispatchToProps = {
-  addTodo: AddTodo,
-  removeTodo: RemoveTodo,
-  toggleTodo: ToggleTodo,
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators(TodoActions, dispatch);
 };
 
 // Connect the component to Redux
