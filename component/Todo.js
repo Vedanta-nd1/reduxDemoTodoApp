@@ -8,9 +8,11 @@ import {
   Button,
   FlatList,
   TouchableOpacity,
+  SafeAreaView
 } from 'react-native';
 import * as TodoActions from '../redux/actions/todoAction/todoActions';
 import { bindActionCreators } from 'redux';
+const deviceIP = '172.16.21.203'; // obtain using "ifconfig en0 | grep 'inet ' | awk '{print $2}'"
 
 class Todo extends Component {
   constructor(props) {
@@ -21,7 +23,7 @@ class Todo extends Component {
   }
 
   handleAddTodo = () => {
-    const { todos, addTodo } = this.props;
+    const { todos } = this.props;
     const { todoValue } = this.state;
     if (todos && !todos.find(todo => todo.text === todoValue)) {
       this.props.AddTodo({ text: todoValue, completed: false });
@@ -37,6 +39,24 @@ class Todo extends Component {
 
   handleToggleTodo = (item) => {
     this.props.ToggleTodo(item);
+  };
+
+  handleAddRandomTodo = async () => {
+    try {
+      const response = await fetch(`http://${deviceIP}:8000/api/todos`);
+      const randomTodos = await response.json();
+  
+      if (Array.isArray(randomTodos) && randomTodos.length > 0) {
+        const randomTodo = randomTodos[0]; // Extract the single string from the array
+  
+        const { todos } = this.props;
+        if (!todos.find(todo => todo.text === randomTodo)) {
+          this.props.AddTodo({ text: randomTodo, completed: false });
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch random todos:', error);
+    }
   };
 
   renderTodoList = () => {
@@ -76,20 +96,27 @@ class Todo extends Component {
 
   render() {
     return (
-      <View style={styles.main}>
-        <TextInput
-          style={styles.mainInput}
-          onChangeText={(todoValue) => this.setState({ todoValue })}
-          placeholder={'Add your todo here'}
-          value={this.state.todoValue}
-        />
-        <Button name="increase" title="Add Todo" onPress={this.handleAddTodo} />
-
-        <Text style={{ alignSelf: 'stretch', paddingLeft: 40 }}>
+      <SafeAreaView style={[styles.main, {flex: 1}]}>
+        <View style={{flexDirection: 'row', margin: 5}}>
+          <View style={{flex: 3}}>
+            <TextInput
+              style={{flex: 5, borderWidth: 1, borderRadius: 9}}
+              onChangeText={(todoValue) => this.setState({ todoValue })}
+              placeholder={'Add your todo here'}
+              value={this.state.todoValue}
+            />
+          </View>
+          <View style={{flex: 1, marginHorizontal: 7}}>
+            <Button title="Add Todo" onPress={this.handleAddTodo} />
+          </View>
+        </View>
+        <Text style={{ fontSize: 24, alignSelf: 'flex-start', fontWeight: 'bold', padding: 5 }}>
           List of Todos:
         </Text>
         {this.renderTodoList()}
-      </View>
+
+        <Button name="Add random todo" title="Add random todo" onPress={this.handleAddRandomTodo} />
+      </SafeAreaView>
     );
   }
 }

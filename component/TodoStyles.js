@@ -6,11 +6,10 @@ let width = Dimensions.get('window').width;
 const TodoStyles = {
   main: {
     alignItems: 'center',
+    margin: 10
   },
   mainInput: {
     borderWidth: 1,
-    height: 55,
-    width: width * 0.9,
     padding: 10,
     margin: 10,
     alignItems: 'center',
@@ -32,6 +31,6 @@ const TodoStyles = {
     borderRadius: 4,
     alignItems: 'center',
     margin: 4,
-  },
+  }
 };
 export const styles = StyleSheet.create(TodoStyles);
