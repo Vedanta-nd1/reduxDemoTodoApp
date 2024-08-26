@@ -19,7 +19,6 @@ const TodoStyles = {
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 10,
     width: width * 0.8,
-    height: 40,
   },
   todoView: {
     flex: 1,

@@ -1,3 +1,7 @@
+# server.py
+# A simple HTTP server that serves a random todo-list item from a list of items
+# The server listens on port 8000 and responds to requests to /api/todos
+
 import http.server
 import socketserver
 import random
@@ -22,14 +26,14 @@ todo_list = [
     "Set up API integration with Redux Thunk",
     "Handle errors and loading states",
     "Create a global state for theme management",
-    "Use React Context for global state management",
-    "Refactor class components to functional components",
+    "Use Redux for global state management",
+    "Refactor class to functional components",
     "Implement memoization with React.memo",
     "Use PropTypes for component validation",
     "Deploy React app to production"
 ]
 
-# Helper function to get 2 random todo-list items
+# Helper function to get 1 random todo-list item
 def get_random_todos():
     return random.sample(todo_list, 1)
 
@@ -44,7 +48,7 @@ class CustomHandler(http.server.SimpleHTTPRequestHandler):
             self.send_header('Content-type', 'application/json')
             self.end_headers()
 
-            # Get 2 random todo-list items
+            # Get 1 random todo-list item
             random_todos = get_random_todos()
 
             # Convert the list to JSON and write it to the response

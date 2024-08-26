@@ -1,8 +1,9 @@
-import {ADD_TODO, REMOVE_TODO, TOGGLE_TODO} from '../actions/todoAction/ActionTypes';
+import { ADD_TODO, REMOVE_TODO, TOGGLE_TODO, ADD_RANDOM_TODO } from '../actions/todoAction/ActionTypes';
 
-const INITIAL_STATE = {todos: [{text: 'Learn Redux', completed: false}, {text:'Learn React', completed: false}]};
+const INITIAL_STATE = {
+  todos: [{ text: 'Learn Redux', completed: false }, { text: 'Learn React', completed: false }],
+};
 
-// Example reducer snippet
 const todoReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case ADD_TODO:
@@ -13,7 +14,7 @@ const todoReducer = (state = INITIAL_STATE, action) => {
     case REMOVE_TODO:
       return {
         ...state,
-        todos: state.todos.filter(todo => todo.text !== action.payload.text)
+        todos: state.todos.filter(todo => todo.text !== action.payload.text),
       };
     case TOGGLE_TODO:
       return {
@@ -22,12 +23,16 @@ const todoReducer = (state = INITIAL_STATE, action) => {
           todo.text === action.payload.text
             ? { ...todo, completed: !todo.completed }
             : todo
-        )
+        ),
+      };
+    case ADD_RANDOM_TODO:
+      return {
+        ...state,
+        todos: [...state.todos, action.payload],
       };
     default:
       return state;
   }
 };
-
 
 export default todoReducer;

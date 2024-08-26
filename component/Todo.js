@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import * as TodoActions from '../redux/actions/todoAction/todoActions';
 import { bindActionCreators } from 'redux';
-const deviceIP = '172.16.21.203'; // obtain using "ifconfig en0 | grep 'inet ' | awk '{print $2}'"
 
 class Todo extends Component {
   constructor(props) {
@@ -42,21 +41,7 @@ class Todo extends Component {
   };
 
   handleAddRandomTodo = async () => {
-    try {
-      const response = await fetch(`http://${deviceIP}:8000/api/todos`);
-      const randomTodos = await response.json();
-  
-      if (Array.isArray(randomTodos) && randomTodos.length > 0) {
-        const randomTodo = randomTodos[0]; // Extract the single string from the array
-  
-        const { todos } = this.props;
-        if (!todos.find(todo => todo.text === randomTodo)) {
-          this.props.AddTodo({ text: randomTodo, completed: false });
-        }
-      }
-    } catch (error) {
-      console.error('Failed to fetch random todos:', error);
-    }
+    this.props.AddRandomTodo();
   };
 
   renderTodoList = () => {
